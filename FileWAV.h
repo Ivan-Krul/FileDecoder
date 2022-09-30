@@ -48,5 +48,5 @@ public:
 	void save(std::string dir_);
 	void destroy();
 	~FileWAV() { destroy(); }
-}
+};
 #include "FileWAV.cpp"
