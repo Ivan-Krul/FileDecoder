@@ -10,8 +10,9 @@ int main()
 	w.setsamplerate(8000);
 	for(int i = 0; i< 500;i++)
 	{
-		w.sample16(i) = sin(i*0.5)*0x4000;
+		w.sample16(i) = (i%2 == 0) ? 0x7fff : 0x8000;
 	}
+	std::cout<<w.size();
 	w.save("Sound.wav");
 	return 0;
 }

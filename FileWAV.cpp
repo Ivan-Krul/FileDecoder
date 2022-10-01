@@ -53,34 +53,59 @@ void FileWAV::save(std::string dir_)
 	std::ofstream fout;
 	fout.open(dir_,std::ios::out | std::ios::binary);
 	
+	char *buffer;
 	uint32_t buf = 36+ _samplecount * _numchannels * _bitpersampleselect;
-	uint16_t buf1;
-	fout << "RIFF" <<reinterpret_cast<char *>(&buf)<<"WAVEfmt ";
+	fout << "RIFF";
+	buffer = (char *)&buf;
+	for(int i = 0;i< 4;i++)
+		fout << buffer[i];
+	fout <<"WAVEfmt ";
 	buf = 16;
-	fout <<reinterpret_cast<char *>(&buf);
+	for(int i = 0;i< 4;i++)
+		fout << buffer[i];
 	buf = 1;
-	fout <<reinterpret_cast<char *>(&buf);
-	fout <<reinterpret_cast<char *>(&_numchannels);
-	fout <<reinterpret_cast<char *>(&_samplerate);
+	for(int i = 0;i< 2;i++)
+		fout << buffer[i];
+	buffer = (char *)&_numchannels;
+	for(int i = 0;i< 2;i++)
+		fout << buffer[i];
+	buffer = (char *)&_samplerate;
+	for(int i = 0;i< 4;i++)
+		fout << buffer[i];
 	buf = _samplerate * _numchannels * _bitpersampleselect;
-	fout <<reinterpret_cast<char *>(&buf);
+	buffer = (char *)&buf;
+	for(int i = 0;i< 4;i++)
+		fout << buffer[i];
 	buf = _numchannels * _bitpersampleselect;
-	fout <<reinterpret_cast<char *>(&buf);
-	buf1 = _numchannels * _bitpersampleselect;
-	fout <<reinterpret_cast<char *>(&buf1);
-	fout <<reinterpret_cast<char *>(&_bitpersampleselect);
-	buf1 = 0;
-	fout <<reinterpret_cast<char *>(&buf1);
+	for(int i = 0;i< 2;i++)
+		fout << buffer[i];
+	buf = _numchannels * _bitpersampleselect;
+	for(int i = 0;i< 2;i++)
+		fout << buffer[i];
+	buffer = (char *)&_bitpersampleselect;
+	for(int i = 0;i< 2;i++)
+		fout << buffer[i];
+	buf = 0;
+	buffer = (char *)&buf;
+	for(int i = 0;i< 2;i++)
+		fout << buffer[i];
 	fout<<"data";
 	buf = _samplecount * _numchannels * _bitpersampleselect;
-	fout <<reinterpret_cast<char *>(&buf);
-	for(int i = 0; i < _samplecount; i++)
-		if(_bitpersampleselect == 1)
-			fout <<reinterpret_cast<char *>(&_ptr._8BSample[i]);
-		else if(_bitpersampleselect == 2)
-			fout <<reinterpret_cast<char *>(&_ptr._16BSample[i]);
-		else
-			fout <<reinterpret_cast<char *>(&_ptr._32BSample[i]);
+	for(int i = 0;i< 4;i++)
+		fout << buffer[i];
+	if(_bitpersampleselect == 1)
+		buffer = (char *)_ptr._8BSample;
+	else if(_bitpersampleselect == 2)
+		buffer = (char *)_ptr._16BSample;
+	else
+		buffer = (char *)_ptr._32BSample;
+	
+	for(int i = 0; i < _samplecount*2; i++)
+	{
+		std::cout<<i<<' '<<short(buffer[i])<<'\n';
+		fout << buffer[i];
+	}
+
 	fout.close();
 }
 

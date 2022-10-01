@@ -20,6 +20,7 @@ X (just data)
 */
 #pragma once
 #include <fstream>
+#include <iostream>
 namespace Filewav
 {
 	union SamplePointer
